@@ -68,8 +68,9 @@ class App extends React.Component {
           <input
             type="number"
             name="result"
-            value={amount * mid}
+            value={(amount * mid).toFixed(2)}
             disabled={true}></input>
+          <button>PLN</button>
         </form>
       </div>
     );
