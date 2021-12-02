@@ -6,10 +6,10 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      currencies: ["USD", "EUR", "CHF"],
-      base: "PLN",
+      currencies: ["EUR", "USD", "CHF"],
+      currency: "EUR",
       amount: "",
-      result: "",
+      mid: 0,
     };
   }
 
@@ -25,7 +25,8 @@ class App extends React.Component {
     });
   };
 
-  calculate = () => {
+  handleClick = (e) => {
+    e.preventDefault();
     const amount = this.state.amount;
     if (!amount) {
       return alert("Value input cannot be empty");
@@ -34,13 +35,16 @@ class App extends React.Component {
         `https://api.nbp.pl/api/exchangerates/rates/a/${this.state.currency}`
       )
         .then((response) => response.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          this.setState({
+            mid: data.rates[0].mid,
+          });
+        });
     }
   };
-  handleClick = (e) => {};
 
   render() {
-    const { currencies, base, amount, result } = this.state;
+    const { currencies, amount, mid } = this.state;
     return (
       <div className="wrapper">
         <h1>Currency Converter</h1>
@@ -51,7 +55,7 @@ class App extends React.Component {
             placeholder="Value"
             value={amount}
             onChange={this.handleInput}></input>
-          <select name="base" value={base} onChange={this.handleSelect}>
+          <select name="base" onChange={this.handleSelect}>
             {currencies.map((currency) => (
               <option key={currency} value={currency}>
                 {currency}
@@ -64,7 +68,7 @@ class App extends React.Component {
           <input
             type="number"
             name="result"
-            value={result}
+            value={amount * mid}
             disabled={true}></input>
         </form>
       </div>
